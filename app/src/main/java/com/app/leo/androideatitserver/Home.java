@@ -27,12 +27,15 @@ import android.widget.Toast;
 import com.app.leo.androideatitserver.Common.Common;
 import com.app.leo.androideatitserver.Interface.ItemClickListener;
 import com.app.leo.androideatitserver.Model.Category;
+import com.app.leo.androideatitserver.Model.Token;
 import com.app.leo.androideatitserver.ViewHolder.MenuViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -118,7 +121,19 @@ public class Home extends AppCompatActivity
 
         loadMenu();
 
+        //send token
+        updateToken(FirebaseInstanceId.getInstance().getToken());
 
+
+    }
+
+    private void updateToken(String token) {
+
+        FirebaseDatabase db= FirebaseDatabase.getInstance();
+        DatabaseReference tokenRef= db.getReference("Tokens");
+
+        Token data=new Token(token,true);//true beacuse this token send from Server
+        tokenRef.child(Common.currentUser.getPhone()).setValue(data);
     }
 
     private void showDialog() {
